@@ -27,9 +27,9 @@ async def spam():
         await page.keyboard.type(line.strip())
         await page.keyboard.press("Enter")
     await page.click('input[type="submit"]')
-    sleep(6)
-    await page.waitForSelector("table.table-hover",visible=True)
     
+    await page.waitForSelector("table.table-hover",visible=True)
+    sleep(6)
     await page.pdf({'path':'BulkBlacklist.pdf'})
     content=await page.content()
     soup =BeautifulSoup(content, "html.parser")
