@@ -11,6 +11,11 @@ BlackIP-Rep accepts Bulk list of IP address which you need to check whether they
 pip install -r requirements.txt
 ```
 
+# Usage
+```python
+python3 BlackIP-Rep.py
+```
+
 
 ## Services used:
 * Mxtoolbox
