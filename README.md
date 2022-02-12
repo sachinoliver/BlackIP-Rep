@@ -34,4 +34,3 @@ python3 BlackIP-Rep.py
   <img src="https://contrib.rocks/image?repo=sachinoliver/BlackIP-Rep" />
 </a>
 
-Made with [contrib.rocks](https://contrib.rocks).
