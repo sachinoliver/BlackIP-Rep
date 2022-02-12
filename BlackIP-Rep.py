@@ -1,23 +1,22 @@
+from time import sleep
 import requests
-import re
-import csv
-import glob
+from bs4 import BeautifulSoup
+import re, csv, glob, sys
+from collections import defaultdict
 import pycountry_convert as pc
-import asyncio
 from rich import print
 from rich.table import Column, Table
+import asyncio
 from selenium import webdriver
 from pyppeteer import launch
 from selenium.webdriver.firefox.options import Options
-from collections import defaultdict
-from time import sleep
-from bs4 import BeautifulSoup
+
 
 
 
 async def spam():
-    print("Starting...")
-    with open('spam1.txt', 'r') as f:
+    file = sys.argv[1]
+    with open(file, 'r') as f:
         lines = f.readlines()
     browser = await launch(options={'args': ['--no-sandbox']}, headless=True)
     page = await browser.newPage()
@@ -28,9 +27,9 @@ async def spam():
         await page.keyboard.type(line.strip())
         await page.keyboard.press("Enter")
     await page.click('input[type="submit"]')
-    sleep(4);
+    sleep(6)
     await page.waitForSelector("table.table-hover",visible=True)
-
+    
     await page.pdf({'path':'BulkBlacklist.pdf'})
     content=await page.content()
     soup =BeautifulSoup(content, "html.parser")
@@ -45,7 +44,7 @@ async def spam():
                     f.write('%s\n' %lines)
             f.close()
 
-    print("[red]PDF written successfully")
+    print("File written successfully")
 
 
     with open("unsorted.txt", "r") as f:
@@ -74,11 +73,12 @@ async def spam():
 
         driver.get_screenshot_as_file(ips+".png")
         driver.quit()
-    print("screenshots completed..")
+    print("end...")
 
 
 async def whois():
-    with open('spam1.txt', 'r') as f:
+    file = sys.argv[1]
+    with open(file, 'r') as f:
         lines = f.readlines()
     browser = await launch(options={'args': ['--no-sandbox']}, headless=True)
     page = await browser.newPage()
@@ -96,7 +96,11 @@ async def whois():
     await page._client.send("Page.setDownloadBehavior", {
   "behavior": "allow",
   "downloadPath": r"/root/tool/production/"})
-    sleep(4);
+    sleep(4)
+
+
+
+
 
 def conti():
     columns = defaultdict(list)
@@ -125,8 +129,8 @@ def conti():
     table.add_column("Continent")
     table.add_column("Country", justify="left")
     table.add_column("Region", justify="left")
-    table.add_column("City", justify="left")
-
+    table.add_column("City", justify="left")    
+    
 
     qq = 0
     for cont in country:
@@ -143,7 +147,6 @@ def conti():
             table.add_row(
     str(qq + 1),"[red]"+ip[qq]+"[/red]", "[green]"+continent_name+"[/green]", cont, regions[qq], city[qq]
     )
-
     print(table)
 
 
