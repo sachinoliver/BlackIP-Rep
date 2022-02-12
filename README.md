@@ -6,8 +6,10 @@ BlackIP-Rep accepts Bulk list of IP address which you need to check whether they
 
 
 
-
-
+# requirements
+```
+pip install -r requirements.txt
+```
 
 
 ## Services used:
