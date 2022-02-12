@@ -1,0 +1,9 @@
+requests
+python-csv
+glob2
+pycountry_convert
+asyncio
+rich
+selenium
+pyppeteer
+bs4
