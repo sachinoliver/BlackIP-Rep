@@ -7,14 +7,14 @@ BlackIP-Rep accepts Bulk list of IP address which you need to check whether they
 
 
 
-# Requirements
+## Requirements
 ```python
 pip install -r requirements.txt
 ```
 
-# Usage
+## Usage
 ```python
-python3 BlackIP-Rep.py
+python3 BlackIP-Rep.py filethatcontainsips.txt
 ```
 
 
