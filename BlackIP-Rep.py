@@ -97,10 +97,6 @@ async def whois():
   "downloadPath": r"/root/tool/production/"})
     sleep(4);
 
-
-
-
-
 def conti():
     columns = defaultdict(list)
     for file in glob.glob('*.csv'):
