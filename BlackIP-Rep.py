@@ -16,6 +16,7 @@ from bs4 import BeautifulSoup
 
 
 async def spam():
+    print("Starting...")
     with open('spam1.txt', 'r') as f:
         lines = f.readlines()
     browser = await launch(options={'args': ['--no-sandbox']}, headless=True)
@@ -44,7 +45,7 @@ async def spam():
                     f.write('%s\n' %lines)
             f.close()
 
-    print("[red]File written successfully")
+    print("[red]PDF written successfully")
 
 
     with open("unsorted.txt", "r") as f:
