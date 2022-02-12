@@ -1,4 +1,3 @@
-requests
 python-csv
 glob2
 pycountry_convert
