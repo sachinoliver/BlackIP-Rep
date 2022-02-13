@@ -1,12 +1,12 @@
-from time import sleep
+import asyncio
 import requests
-from bs4 import BeautifulSoup
+from time import sleep
 import re, csv, glob, sys
-from collections import defaultdict
 import pycountry_convert as pc
+from bs4 import BeautifulSoup
+from collections import defaultdict
 from rich import print
 from rich.table import Column, Table
-import asyncio
 from selenium import webdriver
 from pyppeteer import launch
 from selenium.webdriver.firefox.options import Options
