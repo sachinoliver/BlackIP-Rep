@@ -113,7 +113,7 @@ async def whois():
     sleep(4)
     csv = glob.glob('*.csv')
     csv = csv[0]
-    os.renames(csv,'./BlackIP-Rep/whois.csv')
+    os.renames(csv,'./BlackIP-Rep/whoislookup.csv')
 
 
 
