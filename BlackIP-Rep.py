@@ -87,7 +87,7 @@ async def spam():
 
         driver.get_screenshot_as_file("BlackIP-Rep/screenshots/"+ips+".png")
         driver.quit()
-    print("[+] Screenshot saved at: {}".format(os.getcwd()))
+    print("[+] Screenshot saved at: {}/BlackIP-Rep".format(os.getcwd()))
     os.remove("unsorted.txt")
 
 async def whois():
