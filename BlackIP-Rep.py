@@ -10,7 +10,7 @@ from rich.table import Column, Table
 from selenium import webdriver
 from pyppeteer import launch
 from selenium.webdriver.firefox.options import Options
-
+from colorama import Fore
 
 def printBanner():
     print(Fore.BLUE + """
