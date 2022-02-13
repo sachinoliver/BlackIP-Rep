@@ -1,30 +1,35 @@
-import asyncio
-import requests
 import re, csv, glob, sys
-import pycountry_convert as pc
-from time import sleep
-from bs4 import BeautifulSoup
+import asyncio, os
 from collections import defaultdict
+import pycountry_convert as pc
 from rich import print
 from rich.table import Column, Table
 from selenium import webdriver
 from pyppeteer import launch
 from selenium.webdriver.firefox.options import Options
-from colorama import Fore
+from time import sleep
+from bs4 import BeautifulSoup
 
-def printBanner():
-    print(Fore.BLUE + """
+
+def Banner():
+    print("""
 ██████╗ ██╗      █████╗  ██████╗██╗  ██╗██╗██████╗       ██████╗ ███████╗██████╗
 ██╔══██╗██║     ██╔══██╗██╔════╝██║ ██╔╝██║██╔══██╗      ██╔══██╗██╔════╝██╔══██╗
 ██████╔╝██║     ███████║██║     █████╔╝ ██║██████╔╝█████╗██████╔╝█████╗  ██████╔╝
 ██╔══██╗██║     ██╔══██║██║     ██╔═██╗ ██║██╔═══╝ ╚════╝██╔══██╗██╔══╝  ██╔═══╝
 ██████╔╝███████╗██║  ██║╚██████╗██║  ██╗██║██║           ██║  ██║███████╗██║
 ╚═════╝ ╚══════╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝╚═╝╚═╝           ╚═╝  ╚═╝╚══════╝╚═╝
-                                                                                 """ )
+                                                                                 """)
 
-printBanner()
+
+def directorys():
+    try:
+        os.makedirs('BlackIP-Rep/screenshots')
+    except FileExistsError:
+        pass
 
 async def spam():
+    print("[+] Starting...")
     file = sys.argv[1]
     with open(file, 'r') as f:
         lines = f.readlines()
@@ -37,10 +42,9 @@ async def spam():
         await page.keyboard.type(line.strip())
         await page.keyboard.press("Enter")
     await page.click('input[type="submit"]')
-    
     await page.waitForSelector("table.table-hover",visible=True)
     sleep(6)
-    await page.pdf({'path':'BulkBlacklist.pdf'})
+    await page.pdf({'path':'./BlackIP-Rep/BulkBlacklist.pdf'})
     content=await page.content()
     soup =BeautifulSoup(content, "html.parser")
     s = soup.select("td > a")
@@ -54,24 +58,24 @@ async def spam():
                     f.write('%s\n' %lines)
             f.close()
 
-    print("File written successfully")
+    print("[+] PDF written successfully")
 
 
-    with open("unsorted.txt", "r") as f:
+    with open('unsorted.txt', 'r') as f:
         lines = set(f.readlines())
         lines = list(lines)
-        with open('ip.txt', 'w') as f:
+        with open( "ip.txt", 'w') as f:
             for i in lines:
                 i = i.strip()
                 f.write('%s\n' %i)
         f.close()
     f.close()
 
-    print("Taking Screenshots....")
+    print("[+] Taking Screenshots...")
 
     file = open('ip.txt')
     for line in file:
-        print(line.strip())
+        print("IP: {}".format(line.strip()))
         ips = line.strip()
         option = Options()
         option.headless = True
@@ -81,10 +85,10 @@ async def spam():
         #driver.get('https://www.virustotal.com/gui/ip-address/' + ip )
         sleep(4)
 
-        driver.get_screenshot_as_file(ips+".png")
+        driver.get_screenshot_as_file("BlackIP-Rep/screenshots/"+ips+".png")
         driver.quit()
-    print("end...")
-
+    print("[+] Screenshot saved at: {}".format(os.getcwd()))
+    os.remove("unsorted.txt")
 
 async def whois():
     file = sys.argv[1]
@@ -105,22 +109,24 @@ async def whois():
     await accept.click()
     await page._client.send("Page.setDownloadBehavior", {
   "behavior": "allow",
-  "downloadPath": r"/root/tool/production/"})
+  "downloadPath": "./"})
     sleep(4)
-
+    csv = glob.glob('*.csv')
+    csv = csv[0]
+    os.renames(csv,'./BlackIP-Rep/whois.csv')
 
 
 
 
 def conti():
     columns = defaultdict(list)
-    for file in glob.glob('*.csv'):
-        with open(file) as f:
-            reader = csv.reader(f)
-            next(reader)
-            for row in reader:
-                for (i,v) in enumerate(row):
-                    columns[i].append(v)
+    file = './BlackIP-Rep/whois.csv'
+    with open(file) as f:
+        reader = csv.reader(f)
+        next(reader)
+        for row in reader:
+            for (i,v) in enumerate(row):
+                columns[i].append(v)
         ip = columns[0]
         country = columns[2]
         regions = columns[3]
@@ -159,10 +165,11 @@ def conti():
     )
     print(table)
 
-
+Banner()
+directorys()
 asyncio.get_event_loop().run_until_complete(spam())
 asyncio.get_event_loop().run_until_complete(whois())
 conti()
-print("Done")
-
+print("[+] Done")
+print("[+] Happy Hacking")
 
