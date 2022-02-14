@@ -52,7 +52,7 @@ async def spam():
     for i in range(len(list1)):
         l = str(list1[i])
         if "r.png" in l:
-            ip = re.search( r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}', l).group()
+            ip = re.findall( r'[0-9]+(?:.[0-9]+){3}', l )
             with open('unsorted.txt', 'a') as f:
                 for lines in ip:
                     f.write('%s\n' %lines)
