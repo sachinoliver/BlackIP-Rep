@@ -22,6 +22,16 @@ def Banner():
                                                                                  """)
 
 
+def arguments():
+    parser = argparse.ArgumentParser(usage="python3 "+sys.argv[0]+" file_contains_ip_list.txt")
+    parser.add_argument("file",help="A file containing ip address should be provided")
+    parser.add_argument("-vt", '--virustotal' ,help="Screenshot from Virus Total")
+    # parser.add_argument("-v", "--verbosity", type=int,
+    #                     help="increase output verbosity",default=0)
+    args = parser.parse_args()
+    t = "test"
+    return args.file, t
+
 def directorys():
     try:
         os.makedirs('BlackIP-Rep/screenshots')
@@ -30,7 +40,7 @@ def directorys():
 
 async def spam():
     print("[+] Starting...")
-    file = sys.argv[1]
+    file, t = arguments()
     with open(file, 'r') as f:
         lines = f.readlines()
     browser = await launch(options={'args': ['--no-sandbox']}, headless=True)
@@ -41,6 +51,7 @@ async def spam():
     for line in lines:
         await page.keyboard.type(line.strip())
         await page.keyboard.press("Enter")
+    sleep(4)
     await page.click('input[type="submit"]')
     await page.waitForSelector("table.table-hover",visible=True)
     sleep(6)
@@ -52,13 +63,13 @@ async def spam():
     for i in range(len(list1)):
         l = str(list1[i])
         if "r.png" in l:
-            ip = re.findall( r'[0-9]+(?:.[0-9]+){3}', l )
+            ip = re.findall(r'[0-9]+(?:.[0-9]+){3}', l )
+            ip = ip[0]
             with open('unsorted.txt', 'a') as f:
-                for lines in ip:
-                    f.write('%s\n' %lines)
+                f.write('%s\n' %ip)
             f.close()
 
-    print("[+] PDF written successfully")
+    print("[+] PDF written successfully...")
 
 
     with open('unsorted.txt', 'r') as f:
@@ -87,14 +98,16 @@ async def spam():
 
         driver.get_screenshot_as_file("BlackIP-Rep/screenshots/"+ips+".png")
         driver.quit()
-    print("[+] Screenshot saved at: {}/BlackIP-Rep".format(os.getcwd()))
+    file.close
+    print("[+] Screenshots has been saved...")
+    os.renames("ip.txt",'./BlackIP-Rep/spamedips.txt')
     os.remove("unsorted.txt")
 
 async def whois():
-    file = sys.argv[1]
+    file, t = arguments()
     with open(file, 'r') as f:
         lines = f.readlines()
-    browser = await launch(options={'args': ['--no-sandbox']}, headless=True)
+    browser = await launch(options={'args': ['--no-sandbox']}, headless=False)
     page = await browser.newPage()
     await page.goto("https://www.infobyip.com/ipbulklookup.php/")
     await page.waitForSelector("[name=ips]")
@@ -120,7 +133,7 @@ async def whois():
 
 def conti():
     columns = defaultdict(list)
-    file = './BlackIP-Rep/whois.csv'
+    file = './BlackIP-Rep/whoislookup.csv'
     with open(file) as f:
         reader = csv.reader(f)
         next(reader)
@@ -133,20 +146,21 @@ def conti():
         city = columns[4]
 
     test = 0
-    for i in range(len(regions)):
+    for i in tqdm(range(len(regions))):
         if regions[test] == "":
             regions[test] = "None"
         if city[test] == "":
             city[test] = "None"
         test += 1
+        sleep(0.02)
     table = Table(show_header=True, header_style="bold magenta")
     table.add_column("NO:", style="dim")
     table.add_column("IP", style="dim")
     table.add_column("Continent")
     table.add_column("Country", justify="left")
     table.add_column("Region", justify="left")
-    table.add_column("City", justify="left")    
-    
+    table.add_column("City", justify="left")
+
 
     qq = 0
     for cont in country:
@@ -164,12 +178,13 @@ def conti():
     str(qq + 1),"[red]"+ip[qq]+"[/red]", "[green]"+continent_name+"[/green]", cont, regions[qq], city[qq]
     )
     print(table)
+    print("[+] Files has been stored at: {}/BlackIP-Rep".format(os.getcwd()))
 
 Banner()
+arguments()
 directorys()
 asyncio.get_event_loop().run_until_complete(spam())
 asyncio.get_event_loop().run_until_complete(whois())
 conti()
 print("[+] Done")
 print("[+] Happy Hacking")
-
