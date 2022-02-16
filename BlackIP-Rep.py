@@ -1,7 +1,7 @@
 import re, csv, glob, sys
 import asyncio, os
-from collections import defaultdict
 import pycountry_convert as pc
+from collections import defaultdict
 from rich import print
 from rich.table import Column, Table
 from selenium import webdriver
