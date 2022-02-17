@@ -30,7 +30,7 @@ def arguments():
     parser = argparse.ArgumentParser(usage="python3 "+sys.argv[0]+" file_contains_ip_list.txt")
     parser.add_argument("file",help="A file containing ip address should be provided")
     parser.add_argument("-vt", "--virustotal",help="Takes screenshots for evidence with virustotal",action='store_true')
-    # parser.add_argument("-v", "--verbosity", type=int,help="increase output verbosity",default=0)
+    
     args = parser.parse_args()
     vt = args.virustotal
 
@@ -168,7 +168,6 @@ def conti(value=True):
     table.add_column("Region")
     table.add_column("City")
     
-
     qq = 0
     for cont in country:
         if cont != "Private network":
